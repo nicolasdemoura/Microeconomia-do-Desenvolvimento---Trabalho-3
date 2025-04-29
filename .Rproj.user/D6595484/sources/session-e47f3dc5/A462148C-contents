@@ -1,0 +1,59 @@
+rm(list=ls())
+load.lib <- c("ggplot2","utils","terra","haven","readr","dplyr","readxl","writexl","stargazer","modelsummary","estimatr","did","plm","lmtest")
+install.lib <- load.lib[!load.lib %in% installed.packages()]
+for(lib in install.lib) install.packages(lib,dependencies=TRUE)
+sapply(load.lib, require, character=TRUE)
+gc()
+
+# Importando o Mapa
+
+brazil <- svc("map_brazil.shp")
+brazil <- vect(brazil)
+
+# Filter municipalities from brazil, a SpatVector from terra, where SIGLA_UF == "PI" 
+
+piaui <- terra::subset(brazil, brazil$SIGLA_UF == "PI")
+
+# Criar a base de dados
+
+municipios <- read.csv("data/estratos.csv", sep = ";", dec = ",", header = TRUE, stringsAsFactors = FALSE)
+colnames(municipios) <- c("Estrato", "CD_EST", "Município", "CD_MUN")
+
+municipios$CD_MUN <- as.character(municipios$CD_MUN)
+municipios$Município <- as.character(municipios$Município)
+municipios$Estrato <- as.character(municipios$Estrato)
+
+municipios <- municipios %>% 
+  select("CD_MUN", "Município", "Estrato") %>% 
+  mutate(CD_ESTADO = as.numeric(substr(CD_MUN, 1, 2)))
+
+municipios_piaui <- municipios %>% 
+  filter(CD_ESTADO == 22)
+
+for (i in 1:nrow(piaui)) {
+  piaui$estrato[i] <- municipios_piaui$Estrato[municipios_piaui$CD_MUN == piaui$CD_MUN[i]]
+}
+
+piaui$estrato <- ifelse(piaui$estrato == "Teresina (PI)", "Teresina", piaui$estrato)
+piaui$estrato <- ifelse(piaui$estrato == "Entorno metropolitano de Teresina (PI)", "Entorno metropolitano de Teresina", piaui$estrato)
+
+piaui <- piaui[order(piaui$estrato),]
+
+colors <- c("#105157","#1f7c6f","#a9a2a1","#92d050","#d39902")
+
+png("Figures/estrato.png", width = 800, height = 800)
+plot(piaui, "estrato", col = colors, axes = FALSE, legend = TRUE, border = NA)
+dev.off()
+
+unique_est <- unique(piaui$estrato)
+unique_est <- unique_est[order(unique_est)]
+
+for (j in 1:length(unique_est)) {
+  i <- unique_est[j]
+  piaui[[i]] <- ifelse(piaui$estrato == i, i, NA)
+  png(paste0("Figures/estrato_", i, ".png"), width = 800, height = 800)
+  plot(piaui, i, col = colors[j], axes = FALSE, legend = TRUE, border = "#a2a9a1")
+  dev.off()
+}
+
+
