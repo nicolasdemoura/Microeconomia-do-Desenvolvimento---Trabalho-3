@@ -1,0 +1,30 @@
+A unidade de análise deste experimento será a microrregião, conforme definida pelo IBGE, sendo excluída a microrregião da capital São Paulo devido à sua escala e características socioeconômicas muito distintas das demais. O Estado de São Paulo é composto por 63 microrregiões, e após a exclusão da capital, restam 62 unidades elegíveis. Cada microrregião reúne um conjunto de municípios com forte integração econômica e territorial, refletindo mercados de trabalho e redes de mobilidade relativamente coesas. Essa escolha se justifica por evidências da literatura de que a introdução da Tarifa Zero pode ampliar o raio de busca por emprego e, consequentemente, os salários, especialmente quando há integração prévia nos mercados locais \citeonline{agrawal2024subsidies}.
+
+A definição da proporção entre os grupos de tratamento e controle foi guiada pela estratégia de minimização do \textit{Minimum Detectable Effect} (MDE), conforme proposto por \citeonline{duflo2007using}. Como o custo de implementar a política de Tarifa Zero é substancialmente mais elevado do que o custo de observar os dados no grupo de controle --- dado que a intervenção envolve um subsídio real ao transporte, enquanto os dados são obtidos a partir de registros administrativos e coleta de campo padrão --- estimamos que o custo por unidade no grupo tratado seja aproximadamente nove vezes maior do que no controle. Nessas condições, o valor ótimo da proporção de unidades tratadas, que minimiza o MDE, é de cerca de 25\%. Assim, das 62 microrregiões elegíveis, 16 foram sorteadas para o grupo de tratamento, e as 46 restantes compõem o grupo de controle.
+
+Além disso, optamos por estratificar a amostra a fim de garantir balanceamento ex ante em variáveis estruturais relevantes e permitir posterior análise de heterogeneidade de efeitos. Utilizamos duas variáveis para formar os estratos: a taxa de urbanização e o tamanho da população, ambas medidas com base em dados do censo mais recente. Cada microrregião foi classificada acima ou abaixo da mediana estadual dessas duas variáveis, formando quatro estratos (alta/baixa urbanização x alta/baixa população). Dentro de cada estrato, realizamos a aleatorização com alocação proporcional de 3/4 das unidades para o controle e 1/4 para o tratamento.
+
+A distribuição dos estratos está representada na Figura \ref{fig:strata}, e a alocação final de tratamento na Figura \ref{fig:treat_assign}. Podemos observar que municípios ao longo do Vale do Rio Tietê, estão em regiões com alta população, enquanto regiões como o Vale do Ribeira e o Vale do Paraíba estão em regiões com baixa população. Independentemente, por construção, as microrregiões estão balanceadas em relação à taxa de urbanização e à população. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/strata.png}
+    \caption{Distribuição dos estratos}
+    \label{fig:strata}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/treatment_assignment.png}
+  \caption{Alocação final de tratamento}
+  \label{fig:treat_assign}
+\end{figure}
+
+Para verificar o balanceamento em outras variáveis socioeconômicas, compilamos um painel com indicadores como PIB per capita, fração do PIB oriundo da indústria, fração do PIB de serviços, taxa de desocupação, percentual da população no Programa Bolsa Família (PBF) e índice de Gini. Na Tabela \ref{tab:balance}, não encontramos diferenças estatisticamente significativas entre os grupos de tratamento e controle em nenhuma dessas variáveis, o que é um indicador positivo de que a aleatorização foi bem-sucedida. 
+
+\begin{table}[H]
+    \centering
+    \input{tables/balance_check.tex}
+    \caption{Balanceamento entre grupos de tratamento e controle}
+    \label{tab:balance}
+\end{table}
