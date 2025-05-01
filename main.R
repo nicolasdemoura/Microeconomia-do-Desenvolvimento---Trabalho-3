@@ -250,7 +250,7 @@ temp_data$STRATA <- ifelse(temp_data$PER_URBAN > median(temp_data$PER_URBAN),
 
 temp_data <- temp_data %>% group_by(STRATA) %>%
                               mutate(RAND = runif(n()),
-                                     TREAT = ifelse(RAND > quantile(RAND, 3/4), "Tratado", "Controle")) %>%
+                                     TREAT = ifelse(RAND > quantile(RAND, 0.65), "Tratado", "Controle")) %>%
                               ungroup()
 
 # Incorporate the treatment variable into the map
